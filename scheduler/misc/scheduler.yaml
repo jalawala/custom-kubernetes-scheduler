@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: pythonscheduler
+spec:
+  replicas: 1
+  selector:
+    app: pythonscheduler
+  template:
+    metadata:
+      name: pythonscheduler
+      labels:
+        app: pythonscheduler
+    spec:
+      containers:
+      - name: pythonscheduler
+        image: 000474600478.dkr.ecr.us-east-1.amazonaws.com/ec2spotcustomscheduler:latest
+        volumeMounts:
+        - name: sysdigtoken
+          mountPath: "/etc/sysdigtoken"
+          readOnly: true
+      volumes:
+      - name: sysdigtoken
+        secret:
+          secretName: sysdig-token

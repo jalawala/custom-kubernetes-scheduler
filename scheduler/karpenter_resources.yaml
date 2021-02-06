@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: karpenter-custom-kube-scheduler-demo
+---
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: ScalableNodeGroup
+metadata:
+  name: od-mng-4vcp-16gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  replicas: 1
+  type: AWSEKSNodeGroup
+  id: arn:aws:eks:us-east-1:<ACCOUBT_ID>:nodegroup/eksworkshop/od-mng-4vcp-16gb/02bb8ac2-819c-b0b7-5c9a-07b52540bad6
+---
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: ScalableNodeGroup
+metadata:
+  name: spot-mng-4vcp-16gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  replicas: 1
+  type: AWSEKSNodeGroup
+  id: arn:aws:eks:us-east-1:<ACCOUBT_ID>:nodegroup/eksworkshop/spot-mng-4vcp-16gb/0ebb8ac2-45a3-2a96-82c1-2b19e81f480c
+---  
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: ScalableNodeGroup
+metadata:
+  name: spot-mng-8vcp-32gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  replicas: 1
+  type: AWSEKSNodeGroup
+  id: arn:aws:eks:us-east-1:<ACCOUBT_ID>:nodegroup/eksworkshop/spot-mng-8vcp-32gb/5abb8ac2-9d25-680f-a168-466242d413b8
+---
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: HorizontalAutoscaler
+metadata:
+  name: od-mng-4vcp-16gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  scaleTargetRef:
+    apiVersion: autoscaling.karpenter.sh/v1alpha1
+    kind: ScalableNodeGroup
+    name: od-mng-4vcp-16gb
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - prometheus:
+        query: karpenter_reserved_capacity_cpu_utilization{name="od-mng-4vcp-16gb"}
+        target:
+          type: Utilization
+          value: 60
+    - prometheus:
+        query: karpenter_reserved_capacity_memory_utilization{name="od-mng-4vcp-16gb"}
+        target:
+          type: Utilization
+          value: 60
+---
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: HorizontalAutoscaler
+metadata:
+  name: spot-mng-4vcp-16gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  scaleTargetRef:
+    apiVersion: autoscaling.karpenter.sh/v1alpha1
+    kind: ScalableNodeGroup
+    name: spot-mng-4vcp-16gb
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - prometheus:
+        query: karpenter_reserved_capacity_cpu_utilization{name="spot-mng-4vcp-16gb"}
+        target:
+          type: Utilization
+          value: 60
+    - prometheus:
+        query: karpenter_reserved_capacity_memory_utilization{name="spot-mng-4vcp-16gb"}
+        target:
+          type: Utilization
+          value: 60
+---          
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: HorizontalAutoscaler
+metadata:
+  name: spot-mng-8vcp-32gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  scaleTargetRef:
+    apiVersion: autoscaling.karpenter.sh/v1alpha1
+    kind: ScalableNodeGroup
+    name: spot-mng-8vcp-32gb
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - prometheus:
+        query: karpenter_reserved_capacity_cpu_utilization{name="spot-mng-8vcp-32gb"}
+        target:
+          type: Utilization
+          value: 60
+    - prometheus:
+        query: karpenter_reserved_capacity_memory_utilization{name="spot-mng-8vcp-32gb"}
+        target:
+          type: Utilization
+          value: 60          
+
+---
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: MetricsProducer
+metadata:
+  name: od-mng-4vcp-16gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  reservedCapacity:
+    nodeSelector:
+      eks.amazonaws.com/nodegroup: od-mng-4vcp-16gb
+
+---
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: MetricsProducer
+metadata:
+  name: spot-mng-4vcp-16gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  reservedCapacity:
+    nodeSelector:
+      eks.amazonaws.com/nodegroup: spot-mng-4vcp-16gb
+---      
+apiVersion: autoscaling.karpenter.sh/v1alpha1
+kind: MetricsProducer
+metadata:
+  name: spot-mng-8vcp-32gb
+  namespace: karpenter-custom-kube-scheduler-demo
+spec:
+  reservedCapacity:
+    nodeSelector:
+      eks.amazonaws.com/nodegroup: spot-mng-8vcp-32gb      

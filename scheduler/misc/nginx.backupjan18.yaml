@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  annotations:
+    Ec2SpotK8SCustomScheduler: 'true'
+    OnDemandBase: '1'
+    OnDemandAbovePercentage: '50'
+    SpotASGName: 'Ec2SpotEKS4-Ec2SpotNodegroup1'   
+    OnDemandASGName: 'Ec2SpotEKS4-ODNodegroup1'
+  labels:
+    app: nginx
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      tolerations:
+        - key: "spotInstance"
+          operator: "Equal"
+          value: "true"
+          effect: "PreferNoSchedule"
+      schedulerName: "Ec2SpotK8sScheduler"
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "256m"
+            limits:
+              memory: "512Mi"
+              cpu: "512m"
+          ports:
+            - containerPort: 80

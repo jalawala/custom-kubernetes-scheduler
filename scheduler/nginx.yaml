@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  annotations:
+    UseCustomKubeScheduler: 'true'
+    CustomPodScheduleStrategy: 'nodesize=od4vcpu16gb,base=1,weight=0:nodesize=spot4vcpu16gb,weight=1:nodesize=spot8vcpu32gb,weight=1'
+  labels:
+    app: nginx
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      schedulerName: "K8SCustomScheduler"
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          resources:
+            requests:
+              memory: "1024Mi"
+              cpu: "512m"
+            limits:
+              memory: "1024Mi"
+              cpu: "512m"
+          ports:
+            - containerPort: 80

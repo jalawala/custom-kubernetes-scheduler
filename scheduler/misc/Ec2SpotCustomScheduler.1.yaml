@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ec2spotcustomscheduler
+  labels:
+    app: ec2spotcustomscheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ec2spotcustomscheduler
+  template:
+    metadata:
+      labels:
+        app: ec2spotcustomscheduler
+    spec:
+      nodeSelector:
+        lifecycle: OnDemand     
+      containers:
+        - name: ec2spotcustomscheduler
+          image: 000474600478.dkr.ecr.us-east-1.amazonaws.com/ec2spotcustomscheduler:latest
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "256m"
+            limits:
+              memory: "512Mi"
+              cpu: "512m"

@@ -1,0 +1,224 @@
+Running RunCustomKubeScheduler loop !!!
+Found CustomPodScheduleStrategy : nodesize=od4vcpu16gb,base=1,weight=0:nodesize=spot4vcpu16gb,weight=1:nodesize=spot8vcpu32gb,weight=1 for deployment nginx with numOfReplicas 50 in namespace default
+namespace=default deploymentName=nginx CustomSchedulingData={'nodesize=od4vcpu16gb': 1, 'nodesize=spot4vcpu16gb': 24, 'nodesize=spot8vcpu32gb': 25}
+No of currently running pods in namespace default for deployment nginx is 38
+No of currently pending pods in namespace default for deployment nginx is 12
+No of currently failed pods in namespace default for deployment nginx is 0
+Available node with Label: nodesize=od4vcpu16gb i=1 node=ip-192-168-73-104.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=1 node=ip-192-168-0-187.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=2 node=ip-192-168-13-183.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=3 node=ip-192-168-37-147.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=4 node=ip-192-168-51-110.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=5 node=ip-192-168-68-201.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=6 node=ip-192-168-82-42.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=7 node=ip-192-168-9-182.ec2.internal
+Available node with Label: nodesize=spot8vcpu32gb i=1 node=ip-192-168-51-161.ec2.internal
+CustomScheduleStrategy needs 1 pods running on Label: nodesize=od4vcpu16gb
+i=1 pod=nginx-675b694f5c-tckps already runs on node=ip-192-168-73-104.ec2.internal Label: nodesize=od4vcpu16gb
+Required no of pods i.e. 1 already running on Label: nodesize=od4vcpu16gb. So no need to Schedule !!
+CustomScheduleStrategy needs 24 pods running on Label: nodesize=spot4vcpu16gb
+i=1 pod=nginx-675b694f5c-42qqc already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=2 pod=nginx-675b694f5c-4v2kt already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=3 pod=nginx-675b694f5c-4zzr6 already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=4 pod=nginx-675b694f5c-5gphz already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=5 pod=nginx-675b694f5c-66ndg already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=6 pod=nginx-675b694f5c-67jzk already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=7 pod=nginx-675b694f5c-6g9s9 already runs on node=ip-192-168-0-187.ec2.internal Label: nodesize=spot4vcpu16gb
+i=8 pod=nginx-675b694f5c-7mxd4 already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=9 pod=nginx-675b694f5c-8pdtj already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=10 pod=nginx-675b694f5c-9xvxl already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=11 pod=nginx-675b694f5c-ch2hg already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=12 pod=nginx-675b694f5c-g67lr already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=13 pod=nginx-675b694f5c-h9h5k already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=14 pod=nginx-675b694f5c-khd2c already runs on node=ip-192-168-13-183.ec2.internal Label: nodesize=spot4vcpu16gb
+i=15 pod=nginx-675b694f5c-kr5pf already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=16 pod=nginx-675b694f5c-mrnfv already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=17 pod=nginx-675b694f5c-pjdxx already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=18 pod=nginx-675b694f5c-q8lq2 already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=19 pod=nginx-675b694f5c-qvxcj already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=20 pod=nginx-675b694f5c-rlzh2 already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=21 pod=nginx-675b694f5c-wxk9f already runs on node=ip-192-168-37-147.ec2.internal Label: nodesize=spot4vcpu16gb
+i=22 pod=nginx-675b694f5c-wzq7m already runs on node=ip-192-168-51-110.ec2.internal Label: nodesize=spot4vcpu16gb
+i=23 pod=nginx-675b694f5c-x24s4 already runs on node=ip-192-168-51-110.ec2.internal Label: nodesize=spot4vcpu16gb
+i=24 pod=nginx-675b694f5c-x6644 already runs on node=ip-192-168-51-110.ec2.internal Label: nodesize=spot4vcpu16gb
+Required no of pods i.e. 24 already running on Label: nodesize=spot4vcpu16gb. So no need to Schedule !!
+CustomScheduleStrategy needs 25 pods running on Label: nodesize=spot8vcpu32gb
+i=1 pod=nginx-675b694f5c-fvfxt already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=2 pod=nginx-675b694f5c-ggqw8 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=3 pod=nginx-675b694f5c-gr2vn already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=4 pod=nginx-675b694f5c-hfw4h already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=5 pod=nginx-675b694f5c-kqglk already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=6 pod=nginx-675b694f5c-lcrnv already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=7 pod=nginx-675b694f5c-lvsw8 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=8 pod=nginx-675b694f5c-m4lvc already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=9 pod=nginx-675b694f5c-n2lvs already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=10 pod=nginx-675b694f5c-ns282 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=11 pod=nginx-675b694f5c-ns8g4 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=12 pod=nginx-675b694f5c-p8chl already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=13 pod=nginx-675b694f5c-qnv44 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+Need 25 pods on Label: nodesize=spot8vcpu32gb and 13 are already running. Scheduling remaining 12 pods
+attempting to schedule 1/12 pod=nginx-675b694f5c-zg422 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot8vcpu32gb
+Checking free resources on node=ip-192-168-51-161.ec2.internal with cpu_free=144.0 m and mem_free=17242016.0 Ki for nodeLabel=nodesize=spot8vcpu32gb
+failed scheduling 1/12 pod=nginx-675b694f5c-zg422 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot8vcpu32gb
+Enter any letter to continue: Running RunCustomKubeScheduler loop !!!
+Found CustomPodScheduleStrategy : nodesize=od4vcpu16gb,base=1,weight=0:nodesize=spot4vcpu16gb,weight=1:nodesize=spot8vcpu32gb,weight=1 for deployment nginx with numOfReplicas 50 in namespace default
+namespace=default deploymentName=nginx CustomSchedulingData={'nodesize=od4vcpu16gb': 1, 'nodesize=spot4vcpu16gb': 24, 'nodesize=spot8vcpu32gb': 25}
+No of currently running pods in namespace default for deployment nginx is 14
+No of currently pending pods in namespace default for deployment nginx is 36
+No of currently failed pods in namespace default for deployment nginx is 0
+Available node with Label: nodesize=od4vcpu16gb i=1 node=ip-192-168-73-104.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=1 node=ip-192-168-16-82.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=2 node=ip-192-168-62-144.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=3 node=ip-192-168-83-184.ec2.internal
+Available node with Label: nodesize=spot4vcpu16gb i=4 node=ip-192-168-89-153.ec2.internal
+Available node with Label: nodesize=spot8vcpu32gb i=1 node=ip-192-168-51-161.ec2.internal
+CustomScheduleStrategy needs 1 pods running on Label: nodesize=od4vcpu16gb
+i=1 pod=nginx-675b694f5c-tckps already runs on node=ip-192-168-73-104.ec2.internal Label: nodesize=od4vcpu16gb
+Required no of pods i.e. 1 already running on Label: nodesize=od4vcpu16gb. So no need to Schedule !!
+CustomScheduleStrategy needs 24 pods running on Label: nodesize=spot4vcpu16gb
+Need 24 pods on Label: nodesize=spot4vcpu16gb and 0 are already running. Scheduling remaining 24 pods
+attempting to schedule 1/24 pod=nginx-675b694f5c-8v5wz with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=3810.0 m and mem_free=15105320.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 1/24 pod=nginx-675b694f5c-8v5wz on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=3298.0 m mem_free=14056744.0 Ki
+attempting to schedule 2/24 pod=nginx-675b694f5c-h5b7t with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=3298.0 m and mem_free=14056744.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 2/24 pod=nginx-675b694f5c-h5b7t on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=2786.0 m mem_free=13008168.0 Ki
+attempting to schedule 3/24 pod=nginx-675b694f5c-j4gkn with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=2786.0 m and mem_free=13008168.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 3/24 pod=nginx-675b694f5c-j4gkn on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=2274.0 m mem_free=11959592.0 Ki
+attempting to schedule 4/24 pod=nginx-675b694f5c-k6w5n with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=2274.0 m and mem_free=11959592.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 4/24 pod=nginx-675b694f5c-k6w5n on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=1762.0 m mem_free=10911016.0 Ki
+attempting to schedule 5/24 pod=nginx-675b694f5c-lkcww with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=1762.0 m and mem_free=10911016.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 5/24 pod=nginx-675b694f5c-lkcww on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=1250.0 m mem_free=9862440.0 Ki
+attempting to schedule 6/24 pod=nginx-675b694f5c-m86nv with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=1250.0 m and mem_free=9862440.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 6/24 pod=nginx-675b694f5c-m86nv on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=738.0 m mem_free=8813864.0 Ki
+attempting to schedule 7/24 pod=nginx-675b694f5c-mqtgj with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=738.0 m and mem_free=8813864.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 7/24 pod=nginx-675b694f5c-mqtgj on node=ip-192-168-16-82.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-16-82.ec2.internal cpu_free=226.0 m mem_free=7765288.0 Ki
+attempting to schedule 8/24 pod=nginx-675b694f5c-msg27 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=3810.0 m and mem_free=15407016.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 8/24 pod=nginx-675b694f5c-msg27 on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=3298.0 m mem_free=14358440.0 Ki
+attempting to schedule 9/24 pod=nginx-675b694f5c-ndjh2 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=3298.0 m and mem_free=14358440.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 9/24 pod=nginx-675b694f5c-ndjh2 on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=2786.0 m mem_free=13309864.0 Ki
+attempting to schedule 10/24 pod=nginx-675b694f5c-nhm9w with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=2786.0 m and mem_free=13309864.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 10/24 pod=nginx-675b694f5c-nhm9w on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=2274.0 m mem_free=12261288.0 Ki
+attempting to schedule 11/24 pod=nginx-675b694f5c-p5ncr with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=2274.0 m and mem_free=12261288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 11/24 pod=nginx-675b694f5c-p5ncr on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=1762.0 m mem_free=11212712.0 Ki
+attempting to schedule 12/24 pod=nginx-675b694f5c-pbvqc with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=1762.0 m and mem_free=11212712.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 12/24 pod=nginx-675b694f5c-pbvqc on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=1250.0 m mem_free=10164136.0 Ki
+attempting to schedule 13/24 pod=nginx-675b694f5c-qtzdc with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=1250.0 m and mem_free=10164136.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 13/24 pod=nginx-675b694f5c-qtzdc on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=738.0 m mem_free=9115560.0 Ki
+attempting to schedule 14/24 pod=nginx-675b694f5c-rwsp8 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=738.0 m and mem_free=9115560.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 14/24 pod=nginx-675b694f5c-rwsp8 on node=ip-192-168-62-144.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-62-144.ec2.internal cpu_free=226.0 m mem_free=8066984.0 Ki
+attempting to schedule 15/24 pod=nginx-675b694f5c-rzw4m with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=3810.0 m and mem_free=15407016.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 15/24 pod=nginx-675b694f5c-rzw4m on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=3298.0 m mem_free=14358440.0 Ki
+attempting to schedule 16/24 pod=nginx-675b694f5c-sw7wv with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=3298.0 m and mem_free=14358440.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 16/24 pod=nginx-675b694f5c-sw7wv on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=2786.0 m mem_free=13309864.0 Ki
+attempting to schedule 17/24 pod=nginx-675b694f5c-vhrh7 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=2786.0 m and mem_free=13309864.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 17/24 pod=nginx-675b694f5c-vhrh7 on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=2274.0 m mem_free=12261288.0 Ki
+attempting to schedule 18/24 pod=nginx-675b694f5c-vjmk7 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=2274.0 m and mem_free=12261288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 18/24 pod=nginx-675b694f5c-vjmk7 on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=1762.0 m mem_free=11212712.0 Ki
+attempting to schedule 19/24 pod=nginx-675b694f5c-vnm8v with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=1762.0 m and mem_free=11212712.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 19/24 pod=nginx-675b694f5c-vnm8v on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=1250.0 m mem_free=10164136.0 Ki
+attempting to schedule 20/24 pod=nginx-675b694f5c-x67j9 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=1250.0 m and mem_free=10164136.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 20/24 pod=nginx-675b694f5c-x67j9 on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=738.0 m mem_free=9115560.0 Ki
+attempting to schedule 21/24 pod=nginx-675b694f5c-xbn62 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=738.0 m and mem_free=9115560.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 21/24 pod=nginx-675b694f5c-xbn62 on node=ip-192-168-83-184.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-83-184.ec2.internal cpu_free=226.0 m mem_free=8066984.0 Ki
+attempting to schedule 22/24 pod=nginx-675b694f5c-zg422 with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-89-153.ec2.internal with cpu_free=3810.0 m and mem_free=15407016.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 22/24 pod=nginx-675b694f5c-zg422 on node=ip-192-168-89-153.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-89-153.ec2.internal cpu_free=3298.0 m mem_free=14358440.0 Ki
+attempting to schedule 23/24 pod=nginx-675b694f5c-zg8vg with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-89-153.ec2.internal with cpu_free=3298.0 m and mem_free=14358440.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 23/24 pod=nginx-675b694f5c-zg8vg on node=ip-192-168-89-153.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-89-153.ec2.internal cpu_free=2786.0 m mem_free=13309864.0 Ki
+attempting to schedule 24/24 pod=nginx-675b694f5c-zgd9x with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-16-82.ec2.internal with cpu_free=226.0 m and mem_free=7765288.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-62-144.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-83-184.ec2.internal with cpu_free=226.0 m and mem_free=8066984.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Checking free resources on node=ip-192-168-89-153.ec2.internal with cpu_free=2786.0 m and mem_free=13309864.0 Ki for nodeLabel=nodesize=spot4vcpu16gb
+Scheduled 24/24 pod=nginx-675b694f5c-zgd9x on node=ip-192-168-89-153.ec2.internal with nodeLabel=nodesize=spot4vcpu16gb
+node resources after scheduling pod: Label=nodesize=spot4vcpu16gb, node=ip-192-168-89-153.ec2.internal cpu_free=2274.0 m mem_free=12261288.0 Ki
+CustomScheduleStrategy needs 25 pods running on Label: nodesize=spot8vcpu32gb
+i=1 pod=nginx-675b694f5c-fvfxt already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=2 pod=nginx-675b694f5c-ggqw8 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=3 pod=nginx-675b694f5c-gr2vn already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=4 pod=nginx-675b694f5c-hfw4h already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=5 pod=nginx-675b694f5c-kqglk already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=6 pod=nginx-675b694f5c-lcrnv already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=7 pod=nginx-675b694f5c-lvsw8 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=8 pod=nginx-675b694f5c-m4lvc already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=9 pod=nginx-675b694f5c-n2lvs already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=10 pod=nginx-675b694f5c-ns282 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=11 pod=nginx-675b694f5c-ns8g4 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=12 pod=nginx-675b694f5c-p8chl already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+i=13 pod=nginx-675b694f5c-qnv44 already runs on node=ip-192-168-51-161.ec2.internal Label: nodesize=spot8vcpu32gb
+Need 25 pods on Label: nodesize=spot8vcpu32gb and 13 are already running. Scheduling remaining 12 pods
+attempting to schedule 1/12 pod=nginx-675b694f5c-zgnxg with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot8vcpu32gb
+Checking free resources on node=ip-192-168-51-161.ec2.internal with cpu_free=144.0 m and mem_free=17242016.0 Ki for nodeLabel=nodesize=spot8vcpu32gb
+failed scheduling 1/12 pod=nginx-675b694f5c-zgnxg with cpu_req=512 m mem_req=1 Gi for nodeLabel=nodesize=spot8vcpu32gb
+Enter any letter to continue: 

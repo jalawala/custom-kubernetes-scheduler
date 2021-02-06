@@ -1,0 +1,61 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/bin/npm', 'install', 'forever', '-g' ]
+2 info using npm@1.3.6
+3 info using node@v0.10.48
+4 verbose cache add [ 'forever', null ]
+5 verbose cache add name=undefined spec="forever" args=["forever",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'forever',
+6 verbose parsed url   path: 'forever',
+6 verbose parsed url   href: 'forever' }
+7 silly lockFile e07f8c4a-forever forever
+8 verbose lock forever /root/.npm/e07f8c4a-forever.lock
+9 silly lockFile e07f8c4a-forever forever
+10 silly lockFile e07f8c4a-forever forever
+11 verbose addNamed [ 'forever', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile 28ef027b-forever forever@
+14 verbose lock forever@ /root/.npm/28ef027b-forever.lock
+15 silly addNameRange { name: 'forever', range: '*', hasData: false }
+16 verbose url raw forever
+17 verbose url resolving [ 'https://registry.npmjs.org/', './forever' ]
+18 verbose url resolved https://registry.npmjs.org/forever
+19 info trying registry request attempt 1 at 17:57:02
+20 http GET https://registry.npmjs.org/forever
+21 info retry will retry, error on last attempt: Error: UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+22 info trying registry request attempt 2 at 17:57:13
+23 http GET https://registry.npmjs.org/forever
+24 info retry will retry, error on last attempt: Error: UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+25 info trying registry request attempt 3 at 17:58:13
+26 http GET https://registry.npmjs.org/forever
+27 silly lockFile 28ef027b-forever forever@
+28 silly lockFile 28ef027b-forever forever@
+29 error Error: UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+29 error     at SecurePair.<anonymous> (tls.js:1430:32)
+29 error     at SecurePair.emit (events.js:92:17)
+29 error     at SecurePair.maybeInitFinished (tls.js:1029:10)
+29 error     at CleartextStream.read [as _read] (tls.js:521:13)
+29 error     at CleartextStream.Readable.read (_stream_readable.js:341:10)
+29 error     at EncryptedStream.write [as _write] (tls.js:418:25)
+29 error     at doWrite (_stream_writable.js:226:10)
+29 error     at writeOrBuffer (_stream_writable.js:216:5)
+29 error     at EncryptedStream.Writable.write (_stream_writable.js:183:11)
+29 error     at write (_stream_readable.js:602:24)
+30 error If you need help, you may report this log at:
+30 error     <http://github.com/isaacs/npm/issues>
+30 error or email it to:
+30 error     <npm-@googlegroups.com>
+31 error System Linux 4.14.186-110.268.amzn1.x86_64
+32 error command "node" "/usr/bin/npm" "install" "forever" "-g"
+33 error cwd /home/ec2-user/environment/ec2-spot-workshops/workshops/ec2-spot-game-day/k8s_custom_scheduler
+34 error node -v v0.10.48
+35 error npm -v 1.3.6
+36 verbose exit [ 1, true ]

@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customkubescheduler
+  labels:
+    app: customkubescheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customkubescheduler
+  template:
+    metadata:
+      labels:
+        app: customkubescheduler
+    spec:
+      containers:
+        - name: customkubescheduler
+          image: 000474600478.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "256m"
+            limits:
+              memory: "512Mi"
+              cpu: "512m"
