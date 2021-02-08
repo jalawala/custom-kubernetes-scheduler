@@ -180,11 +180,14 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 
 docker build --no-cache -t customkubescheduler .
-docker tag customkubescheduler:latest <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
-docker push <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
+docker build  -t customkubescheduler .
+docker tag customkubescheduler:latest $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
+docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
  
 ### Step4 :  Build and Deploy the customer Scheduler onto OnDemand Instances
 Update the docker image path in customkubescheduler.yaml. 
+
+envsubst < CustomKubeScheduler.yaml | kubectl apply -f -
 
 kubectl apply  -f CustomKubeScheduler.yaml 
 
