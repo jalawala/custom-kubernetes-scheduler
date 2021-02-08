@@ -188,6 +188,9 @@ Update the docker image path in customkubescheduler.yaml.
 
 kubectl apply  -f CustomKubeScheduler.yaml 
 
+envsubst < CustomKubeScheduler.yaml | kubectl apply -f -
+
+
 ### Step5 : Monitor the logs for the custom scheduler
 kubectl logs -f customkubescheduler-78b6c6c989-bzn5x
 
