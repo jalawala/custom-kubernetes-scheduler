@@ -125,7 +125,7 @@ metadata:
   labels:
     app: customkubescheduler
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: customkubescheduler
@@ -137,11 +137,7 @@ spec:
       serviceAccountName: cluster-autoscaler
       containers:
         - name: customkubescheduler
-<<<<<<< HEAD
-          image: <ACCOUNT_iD>.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
-=======
-          image: <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
->>>>>>> 990520cc70dcd33abb32dabd104bf942e3e78eeb
+          image: $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/customkubescheduler:latest
           resources:
             requests:
               memory: "512Mi"

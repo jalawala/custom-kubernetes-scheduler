@@ -15,10 +15,12 @@ Its basic work flow is as follows.
 
 
 ## Prerequisites
-nd check if the admission registration API is enabled in your cluster by running:
+Install Python3 is installed and run below command to deploy the required packages
 
 ```bash
-kubectl api-versions 
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py --force-reinstall
+pip3 install -r requirements.txt  
 ```
 ## Create EKS Cluster
 Create an EKS cluster or re-use an existing cluster. Ensure that basic commands wor

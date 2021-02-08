@@ -13,7 +13,7 @@ from timeloop import Timeloop
 from datetime import timedelta
 
 
-RUN_AS_K8S_DEPLOYMENT=1
+RUN_AS_K8S_DEPLOYMENT=0
 CUSTOM_KUBE_SCHEDULE_INTERVAL=10
 
 if RUN_AS_K8S_DEPLOYMENT:
@@ -119,7 +119,7 @@ def CustomSchedulePerNamespace(namespace, deploymentCustomSchedulingData):
         nodesListPerNodeLabel = {}
         get_node_available_nodes_list(CustomSchedulingData)
         
-        DEBUG_ENABLED = 1
+        DEBUG_ENABLED = 0
         
         if DEBUG_ENABLED:
             for i, pod in  enumerate (runningPodsList):
@@ -144,9 +144,6 @@ def CustomSchedulePerNamespace(namespace, deploymentCustomSchedulingData):
             
             NumOfPodsRunningAlready = 0
             podsAlreadyRunningOnNodeLabelList =  []
-            
-            NumOfPodsPending  = len (pendingPodsList)
-            
             
             DEBUG_ENABLED = 1
             for pod in runningPodsList:
