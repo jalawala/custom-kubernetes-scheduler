@@ -1,3 +1,7 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/jalawala/custom-kubernetes-scheduler)
+
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/jalawala/custom-kubernetes-scheduler)
+
 # Custom Kube Scheduler with Karpenter
 
 This repo contains a sample demo on how to run the custom kubernetes scheduler along with Karpneter.
