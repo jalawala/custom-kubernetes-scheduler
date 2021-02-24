@@ -151,7 +151,7 @@ spec:
       serviceAccountName: custom-kube-scheduler-sa
       containers:
         - name: custom-kube-scheduler-webhook
-          image: 000474600478.dkr.ecr.us-east-1.amazonaws.com/custom-kube-scheduler-webhook/custom-kube-scheduler-webhook:latest
+          image: $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/custom-kube-scheduler-webhook/custom-kube-scheduler-webhook:latest
           env:
           - name: LOG_LEVEL
             value: "INFO1"

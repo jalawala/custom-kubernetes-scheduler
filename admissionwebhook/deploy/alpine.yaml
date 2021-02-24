@@ -8,6 +8,7 @@ metadata:
   annotations:
     UseCustomKubeScheduler: 'true'
     CustomPodScheduleStrategy: 'nodesize=od4vcpu16gb,base=1,weight=0:nodesize=spot4vcpu16gb,weight=1:nodesize=spot8vcpu32gb,weight=1'
+    #CustomPodScheduleStrategy: 'lifecycle=spot&30ase=1,weight=0:lifecycle=od,80weight=1:nodesize=spot8vcpu32gb,weight=1'
 spec:
   replicas: 10
   selector:
