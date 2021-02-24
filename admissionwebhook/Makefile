@@ -1,8 +1,8 @@
 # Image URL to use all building/pushing image targets;
 # Use your own docker registry and image name for dev/test by overridding the
 # IMAGE_REPO, IMAGE_NAME and IMAGE_TAG environment variable.
-IMAGE_REPO ?= 000474600478.dkr.ecr.us-east-1.amazonaws.com/sidecar-injector
-IMAGE_NAME ?= sidecar-injector
+IMAGE_REPO ?= 000474600478.dkr.ecr.us-east-1.amazonaws.com/custom-kube-scheduler-webhook
+IMAGE_NAME ?= custom-kube-scheduler-webhook
 
 # Github host to use for checking the source tree;
 # Override this variable ue with your own value if you're working on forked repo.

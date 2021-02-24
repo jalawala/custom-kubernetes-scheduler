@@ -7,5 +7,5 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 make push-image
 
 sleep 1
-kubectl -n sidecar-injector rollout restart deployment sidecar-injector-webhook-deployment
+kubectl -n custom-kube-scheduler-webhook rollout restart deployment custom-kube-scheduler-webhook
 

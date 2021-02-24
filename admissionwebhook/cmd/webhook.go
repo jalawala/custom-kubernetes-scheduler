@@ -56,8 +56,8 @@ const (
 
 type WebhookServer struct {
 	sync.Mutex
-	sidecarConfig *Config
-	server        *http.Server
+	//sidecarConfig *Config
+	server *http.Server
 }
 
 // Webhook Server parameters
@@ -84,30 +84,6 @@ type NodeLabelStrategy struct {
 	Replicas  int
 	Weight    int
 }
-
-//type NodeLabelStrategyList []NodeLabelStrategy
-
-/*
-func init() {
-	_ = corev1.AddToScheme(runtimeScheme)
-	_ = admissionregistrationv1beta1.AddToScheme(runtimeScheme)
-	// defaulting with webhooks:
-	// https://github.com/kubernetes/kubernetes/issues/57982
-	_ = v1.AddToScheme(runtimeScheme)
-}
-*/
-// (https://github.com/kubernetes/kubernetes/issues/57982)
-/*
-func applyDefaultsWorkaround(containers []corev1.Container, volumes []corev1.Volume) {
-	defaulter.Default(&corev1.Pod{
-		Spec: corev1.PodSpec{
-			Containers: containers,
-			Volumes:    volumes,
-		},
-	})
-}
-
-*/
 
 var (
 	serviceInstance = 1
@@ -138,48 +114,6 @@ func mutationRequired(ignoredList []string, metadata *metav1.ObjectMeta) bool {
 		}
 	}
 	return true
-}
-
-func addContainer(target, added []corev1.Container, basePath string) (patch []patchOperation) {
-	first := len(target) == 0
-	var value interface{}
-	for _, add := range added {
-		value = add
-		path := basePath
-		if first {
-			first = false
-			value = []corev1.Container{add}
-		} else {
-			path = path + "/-"
-		}
-		patch = append(patch, patchOperation{
-			Op:    "add",
-			Path:  path,
-			Value: value,
-		})
-	}
-	return patch
-}
-
-func addVolume(target, added []corev1.Volume, basePath string) (patch []patchOperation) {
-	first := len(target) == 0
-	var value interface{}
-	for _, add := range added {
-		value = add
-		path := basePath
-		if first {
-			first = false
-			value = []corev1.Volume{add}
-		} else {
-			path = path + "/-"
-		}
-		patch = append(patch, patchOperation{
-			Op:    "add",
-			Path:  path,
-			Value: value,
-		})
-	}
-	return patch
 }
 
 func updateNodeSelectors(target map[string]string, added map[string]string, basePath string) (patch []patchOperation) {
@@ -230,7 +164,7 @@ func updateAnnotation(target map[string]string, added map[string]string) (patch 
 
 // create mutation patch for resoures
 //func createPatch(pod *corev1.Pod, sidecarConfig *Config, annotations map[string]string) ([]byte, error) {
-func createPatch(pod *corev1.Pod, sidecarConfig *Config, nodeselectors map[string]string) ([]byte, error) {
+func createPatch(pod *corev1.Pod, nodeselectors map[string]string) ([]byte, error) {
 	var patch []patchOperation
 
 	//patch = append(patch, addContainer(pod.Spec.Containers, sidecarConfig.Containers, "/spec/containers")...)
@@ -244,19 +178,6 @@ func createPatch(pod *corev1.Pod, sidecarConfig *Config, nodeselectors map[strin
 // main mutation process
 func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview, serviceInstanceNum int) *v1beta1.AdmissionResponse {
 	req := ar.Request
-
-	/*
-		if req.Operation == "DELETE" {
-			//glog.Infof("mutate: req=%v\n", req)
-			//glog.Infof("mutate: ar=%v\n", ar)
-			glog.Infof("serviceInstanceNum=%d AdmissionReview for Kind=%v Name=%v Namespace=%v UID=%v patchOperation=%v",
-				serviceInstanceNum, req.Kind, req.Name, req.Namespace, req.UID, req.Operation)
-			return &v1beta1.AdmissionResponse{
-				Allowed: true,
-			}
-		}
-
-	*/
 
 	var pod corev1.Pod
 	if err := json.Unmarshal(req.Object.Raw, &pod); err != nil {
@@ -299,7 +220,7 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview, serviceInstanceN
 		}
 	}
 
-	patchBytes, err := createPatch(&pod, whsvr.sidecarConfig, nodeselectors)
+	patchBytes, err := createPatch(&pod, nodeselectors)
 	if err != nil {
 		return &v1beta1.AdmissionResponse{
 			Result: &metav1.Status{

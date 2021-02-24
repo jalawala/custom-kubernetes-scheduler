@@ -1,15 +1,15 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: sidecar-injector-webhook-cfg
+  name: custom-kube-scheduler-webhook
   labels:
-    app: sidecar-injector
+    app: custom-kube-scheduler-webhook
 webhooks:
-- name: sidecar-injector.morven.me
+- name: custom-kube-scheduler-webhook
   clientConfig:
     service:
-      name: sidecar-injector-webhook-svc
-      namespace: sidecar-injector
+      name: custom-kube-scheduler-webhook
+      namespace: custom-kube-scheduler-webhook
       path: "/mutate"
     caBundle: ${CA_BUNDLE}
   rules:
