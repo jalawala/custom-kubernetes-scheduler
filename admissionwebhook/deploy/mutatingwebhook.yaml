@@ -5,7 +5,7 @@ metadata:
   labels:
     app: custom-kube-scheduler-webhook
 webhooks:
-- name: custom-kube-scheduler-webhook
+- name: custom-kube-scheduler-webhook.jp.me
   clientConfig:
     service:
       name: custom-kube-scheduler-webhook
@@ -19,4 +19,4 @@ webhooks:
     resources: ["pods"]
   namespaceSelector:
     matchLabels:
-      sidecar-injection: enabled
+      custom-kube-scheduler-webhook: enabled

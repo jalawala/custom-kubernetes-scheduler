@@ -1,12 +1,3 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: custom-kube-scheduler-test
-  labels:
-    custom-kube-scheduler-webhook: enabled  
-  
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,7 +9,7 @@ metadata:
     UseCustomKubeScheduler: 'true'
     CustomPodScheduleStrategy: 'nodesize=od4vcpu16gb,base=1,weight=0:nodesize=spot4vcpu16gb,weight=1:nodesize=spot8vcpu32gb,weight=1'
 spec:
-  replicas: 3
+  replicas: 10
   selector:
     matchLabels:
       app: alpine

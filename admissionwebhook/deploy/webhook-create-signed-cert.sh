@@ -48,7 +48,7 @@ done
 
 [ -z "${service}" ] && service=custom-kube-scheduler-webhook
 [ -z "${secret}" ] && secret=custom-kube-scheduler-webhook-certs
-[ -z "${namespace}" ] && namespace=default
+[ -z "${namespace}" ] && namespace=custom-kube-scheduler-webhook
 
 if [ ! -x "$(command -v openssl)" ]; then
     echo "openssl not found"
