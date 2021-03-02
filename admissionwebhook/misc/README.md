@@ -123,11 +123,28 @@ kubectl create -f deploy/custom-kube-scheduler-webhook.yaml
 kubectl create -f deploy/mutatingwebhook-ca-bundle.yaml
 ```
 
-## Deploy a sample application 
+## Deploy the Cluster Auto Scaler
 
-### Create a test namespace and deploy the sample app
+Download the Cluster Auto Scaler config file
 
-Verify that web hook is running fine
+```
+curl -o ./deploy/cluster_autoscaler.yml https://raw.githubusercontent.com/awslabs/ec2-spot-workshops/master/content/using_ec2_spot_instances_with_eks/scaling/deploy_ca.files/cluster_autoscaler.yml
+sed -i "s/--AWS_REGION--/${AWS_REGION}/g" ./deploy/cluster_autoscaler.yml
+sed -i "s/eksworkshop-eksctl/${CLUSTER_NAME}/g" ./deploy/cluster_autoscaler.yml
+
+```
+
+Deploy the Cluster Auto Scaler
+
+```
+kubectl apply -f ./deploy/cluster_autoscaler.yml
+
+```
+
+
+
+
+1. verify that web hook is running fine
 
 ```
 kubectl create -f deploy/namespaces.yaml
@@ -136,7 +153,7 @@ NAME                                            READY   STATUS    RESTARTS   AGE
 custom-kube-scheduler-webhook-66dd85646-qp244   1/1     Running   0          7m22s
 ```
 
-Create new namespace `custom-kube-scheduler-test` and label it with `custom-kube-scheduler-webhook: enabled':
+2. Create new namespace `custom-kube-scheduler-test` and label it with `custom-kube-scheduler-webhook: enabled':
 
 ```
 kubectl create -f deploy/namespaces.yaml
@@ -145,7 +162,7 @@ NAME                         STATUS   AGE
 custom-kube-scheduler-test   Active   8m43s
 ```
 
-Deploy an app in Kubernetes cluster, take `alpine` app as an example
+3. Deploy an app in Kubernetes cluster, take `alpine` app as an example
 
 ```
 kubectl create -f deploy/alpine.yaml
@@ -163,10 +180,10 @@ replicas: 10
 ```
 As per this label 'nodesize=od4vcpu16gb' should have 1 pod and 'nodesize=spot4vcpu16gb' should have 4 and 'nodesize=spot8vcpu32gb' should have 5 pods 
 
-Verify pods are distributed as per the strategy
+4. Verify pods are distributed as per the strategy
 
 ```
-./check_pod_spread.sh 
+jp:~/environment/jalawala/custom-kubernetes-scheduler/admissionwebhook (main) $ ./build3.sh 
 NAME                      READY   STATUS    RESTARTS   AGE
 alpine-5c4ff85997-6qwxs   1/1     Running   0          5m22s
 alpine-5c4ff85997-7gbnz   1/1     Running   0          5m23s
@@ -186,51 +203,5 @@ Number of Occurences for nodesize:spot8vcpu32gb is 5
 
 ## Troubleshooting
 
+TBD
 
-### Check Webhook logs 
-
-Run this script on a seperate terminal to check logs
-
-```
-./check_webhook_logs.sh
-```
-
-The log levels are controlled by environment variable in the deployment spec file i.e. 'deploy\custom-kube-scheduler-webhook.yaml'
-
-```
-          env:
-          - name: LOG_LEVEL
-            value: "INFO"
-```
-
-Only one value i.e.  default "INFO" is supported for now. It prints detailed logging information.
-To reduce the log output, replace "INFO" with a empty "" string and re-deploy the deployment.
-
-```
-kubectl apply -f ./deploy/custom-kube-scheduler-webhook.yaml
-```
-### Source code  
-
-The source code is available in two Go files i.e.  cmd/main.go and cmd/webhook.go
-
-### Debug the code
-
-if you need to make any changes in the code and re-build the container and re-deploy it, run below command
-
-```
-./build_and_push.sh
-kubectl -n custom-kube-scheduler-webhook rollout restart deployment custom-kube-scheduler-webhook
-```
-
-### Block list namespaces 
-
-You can avoid/ignore certain name spaces for this custom pod scheduling webhook functionality
-
-This is specified as environment variable  the deployment spec file i.e. 'deploy\custom-kube-scheduler-webhook.yaml'
-
-```
-          - name: BLOCKLISTED_NAMESPACE_LIST
-            value: "kube-system,kube-public,default"
-```
-
-if you want to add an additional name space, add it to above list WITHOUT any extra spaces after comma and re-deploy it
