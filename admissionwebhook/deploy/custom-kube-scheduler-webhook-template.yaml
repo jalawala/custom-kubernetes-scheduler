@@ -148,8 +148,6 @@ spec:
       labels:
         app: custom-kube-scheduler-webhook
     spec:
-      nodeSelector:
-        eks.amazonaws.com/nodegroup: ng
       serviceAccountName: custom-kube-scheduler-sa
       containers:
         - name: custom-kube-scheduler-webhook

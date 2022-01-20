@@ -26,6 +26,7 @@ export CUSTOM_SCHEDULER_WEBHOOK=custom-kube-scheduler-webhook
 export CLUSTER_NAME=eks-ref-cluster
 export ECR_REPO=custom-kube-scheduler-webhook
 
+export CLUSTER_NAME=eksworkshop5
 
 
 git clone https://github.com/jalawala/custom-kubernetes-scheduler.git

@@ -684,7 +684,7 @@ func RunBatchJobForPodsCleanup() {
 		}
 
 		for _, ns := range namespcaeData.Items {
-			//fmt.Println(i, ns.Name)
+			//fmt.Println(ns)
 
 			if isNamespaceAllowed(ns.Name) {
 				deploymentsClient := clientset.AppsV1().Deployments(ns.Name)

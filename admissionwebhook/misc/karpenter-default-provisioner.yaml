@@ -1,0 +1,24 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  requirements:
+    - key: "topology.kubernetes.io/zone" # If not included, all zones are considered
+      operator: In
+      values: ["us-east-1a", "us-east-1b", "us-east-1c"]
+    - key: "kubernetes.io/arch" # If not included, all architectures are considered
+      operator: In
+      values: ["amd64"]
+    - key: "kubernetes.io/os" # If not included, all operating systems are considered
+      operator: In
+      values: ["linux"]
+    - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
+      operator: In
+      values: ["spot", "on-demand"]
+  limits:
+    resources:
+      cpu: 1000      
+  provider:
+    instanceProfile: "KarpenterNodeInstanceProfile-eksworkshop5"
+  ttlSecondsAfterEmpty: 30
