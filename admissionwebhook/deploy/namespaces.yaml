@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: custom-kube-scheduler-test
+  name: test
   labels:
     custom-kube-scheduler-webhook: enabled 
   

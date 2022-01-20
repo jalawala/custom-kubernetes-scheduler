@@ -148,10 +148,12 @@ spec:
       labels:
         app: custom-kube-scheduler-webhook
     spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: ng    
       serviceAccountName: custom-kube-scheduler-sa
       containers:
         - name: custom-kube-scheduler-webhook
-          image: $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/custom-kube-scheduler-webhook/custom-kube-scheduler-webhook:latest
+          image: 000474600478.dkr.ecr.us-east-1.amazonaws.com/custom-kube-scheduler-webhook
           env:
           - name: LOG_LEVEL
             value: "INFO"

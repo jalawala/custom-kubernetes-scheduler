@@ -19,13 +19,111 @@ Ensure that below tools are installed in your environment.
 Set few environment variables
 
 ```bash
-export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+
 export CUSTOM_SCHEDULER_WEBHOOK=custom-kube-scheduler-webhook
+export CLUSTER_NAME=eks-ref-cluster
+export ECR_REPO=custom-kube-scheduler-webhook
+
+
+
 git clone https://github.com/jalawala/custom-kubernetes-scheduler.git
 cd custom-kubernetes-scheduler/admissionwebhook
 
 ```
+
+## Create EKS Cluster
+
+
+## Install Karpenter
+
+###Tag Subnets
+
+Karpenter discovers subnets tagged kubernetes.io/cluster/$CLUSTER_NAME. Add this tag to subnets associated configured for your cluster.
+
+```bash
+SUBNET_IDS=$(aws cloudformation describe-stacks --stack-name eksctl-${CLUSTER_NAME}-cluster   --query 'Stacks[].Outputs[?OutputKey==`SubnetsPrivate`].OutputValue'    --output text)
+SUBNET_IDS="subnet-068bd05b2e0d18591,subnet-0596c6df68ab54937,subnet-071e53f3744cce90b"        
+aws ec2 create-tags --resources $(echo $SUBNET_IDS | tr ',' '\n')  --tags Key="kubernetes.io/cluster/${CLUSTER_NAME}",Value=
+
+```
+
+###Create the KarpenterNode IAM Role
+
+Instances launched by Karpenter must run with an InstanceProfile that grants permissions necessary to run containers and configure networking.
+
+```bash
+TEMPOUT=$(mktemp)
+curl -fsSL https://karpenter.sh/docs/getting-started/cloudformation.yaml > $TEMPOUT \
+&& aws cloudformation deploy \
+  --stack-name Karpenter-${CLUSTER_NAME} \
+  --template-file ${TEMPOUT} \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --parameter-overrides ClusterName=${CLUSTER_NAME}
+
+```
+
+Second, grant access to instances using the profile to connect to the cluster.
+
+```bash
+eksctl create iamidentitymapping \
+  --username system:node:{{EC2PrivateDNSName}} \
+  --cluster  ${CLUSTER_NAME} \
+  --arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/KarpenterNodeRole-${CLUSTER_NAME} \
+  --group system:bootstrappers \
+  --group system:nodes
+```
+
+###Create the KarpenterController IAM Role
+
+Karpenter requires permissions like launching instances.
+
+
+```bash
+eksctl create iamserviceaccount \
+  --cluster $CLUSTER_NAME --name karpenter --namespace karpenter \
+  --attach-policy-arn arn:aws:iam::$AWS_ACCOUNT_ID:policy/KarpenterControllerPolicy-$CLUSTER_NAME \
+  --approve
+```
+
+### Create the EC2 Spot Service Linked Role 
+
+This step is only necessary if this is the first time you’re using EC2 Spot in this account
+
+```bash
+aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
+```
+
+### Install Karpenter Helm Chart 
+
+Use helm to deploy Karpenter to the cluster.
+
+```bash
+helm repo add karpenter https://charts.karpenter.sh
+helm repo update
+helm upgrade --install karpenter karpenter/karpenter --namespace karpenter \
+  --create-namespace --set serviceAccount.create=false --version 0.5.3 \
+  --set controller.clusterName=${CLUSTER_NAME} \
+  --set controller.clusterEndpoint=$(aws eks describe-cluster --name ${CLUSTER_NAME} --query "cluster.endpoint" --output json) \
+  --wait # for the defaulting webhook to install before creating a Provisioner
+
+
+kubectl get node -L node.kubernetes.io/instance-type,kubernetes.io/arch,karpenter.sh/capacity-type
+
+kubectl  rollout restart ds aws-node  -n kube-system
+kubectl  rollout restart deployment custom-kube-scheduler-webhook  -n custom-kube-scheduler-webhook
+
+kubectl get pod -n custom-kube-scheduler-webhook
+kubectl scale deployment custom-kube-scheduler-webhook  --replicas=20 -n test
+
+
+
+```
+
+
+
+## Prerequisites
 
 
 ### Create an EKS Cluster and Managed nodegroups
@@ -85,6 +183,23 @@ Create namespace `custom-kube-scheduler-webhook` in which the mutating pod webho
 
 ```
  kubectl create ns custom-kube-scheduler-webhook
+ 
+
+  
+  
+export ECR_REPO_URI=000474600478.dkr.ecr.us-east-1.amazonaws.com/custom-kube-scheduler-webhook
+export ECR_REPO=custom-kube-scheduler-webhook
+
+aws ecr get-login-password --region $AWS_REGION | 
+  docker login --username AWS --password-stdin $ECR_REPO_URI
+  
+docker build --no-cache  -t $ECR_REPO .
+docker tag ${ECR_REPO}:latest ${ECR_REPO_URI}:latest
+docker push ${ECR_REPO_URI}:latest
+
+ 
+ 
+ 
 ```
 
 ### Create the Certificate and Secrets
@@ -148,7 +263,14 @@ custom-kube-scheduler-test   Active   8m43s
 Deploy an app in Kubernetes cluster, take `alpine` app as an example
 
 ```
+kubectl get pod -n custom-kube-scheduler-webhook
+
 kubectl create -f deploy/alpine.yaml
+```
+text for the bash command
+
+```bash
+
 ```
 
 Note that alpine has below strategy
