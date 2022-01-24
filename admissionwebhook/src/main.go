@@ -5,18 +5,19 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"github.com/golang/glog"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
-
-	"github.com/golang/glog"
 )
 
 var (
-	AppLogLevel          string
-	BlockedNameSpaceList []string
+	AppLogLevel              string
+	BlockedNameSpaceList     []string
+	ReconcilerIntervalPeriod int
 )
 
 /*
@@ -36,9 +37,15 @@ func main() {
 	flag.Parse()
 
 	AppLogLevel = os.Getenv("LOG_LEVEL")
+	ReconcilerIntervalPeriod, err := strconv.Atoi(os.Getenv("RECONCILER_PERIOD"))
+
+	if err == nil {
+		ReconcilerIntervalPeriod = 5
+	}
+
 	BlockedNameSpaceList = strings.Split(os.Getenv("BLOCKLISTED_NAMESPACE_LIST"), ",")
 
-	glog.Infof("AppLogLevel=%s BlockedNameSpaceList=%v", AppLogLevel, BlockedNameSpaceList)
+	glog.Infof("AppLogLevel=%s BlockedNameSpaceList=%v ReconcilerIntervalPeriod=%d", AppLogLevel, BlockedNameSpaceList, ReconcilerIntervalPeriod)
 
 	//sidecarConfig, err := loadConfig(parameters.sidecarCfgFile)
 	//if err != nil {

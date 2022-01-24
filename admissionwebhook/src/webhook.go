@@ -379,15 +379,15 @@ func ProcessDeployment(nameSpace string, deploymentName string, serviceInstanceN
 			}
 			//for nodeLabel, replicas := range customSchedulingStrategyMap {
 			for _, nodeLabelStrategy := range nodeLabelStrategyList {
-				//	if AppLogLevel == "INFO" {
-				//		glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s needs %d replicas\n", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, nodeLabelStrategy.Replicas)
-				//	}
+				if AppLogLevel == "TRACE" {
+					glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s needs %d replicas\n", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, nodeLabelStrategy.Replicas)
+				}
 				ExistingPodsList, result := GetNumOfExistingPods(nameSpace, deploymentName, nodeLabelStrategy.NodeLabel, serviceInstanceNum)
 				numOfExistingPods := len(ExistingPodsList)
 				if result {
-					if AppLogLevel == "INFO" {
-						glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s currently runs %d pods", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, numOfExistingPods)
-					}
+
+					glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s currently runs %d pods", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, numOfExistingPods)
+
 					if numOfExistingPods < nodeLabelStrategy.Replicas {
 						if flow == "CREATE" {
 							glog.Infof("flow=%s serviceInstanceNum=%d Currently running %d pods is less than expected %d, scheduling pod on nodeLabel %s", flow, serviceInstanceNum, numOfExistingPods, nodeLabelStrategy.Replicas, nodeLabelStrategy.NodeLabel)
@@ -399,9 +399,9 @@ func ProcessDeployment(nameSpace string, deploymentName string, serviceInstanceN
 						}
 
 					} else if numOfExistingPods == nodeLabelStrategy.Replicas {
-						if AppLogLevel == "INFO" {
-							glog.Infof("flow=%s serviceInstanceNum=%d Currently running %d pods is SAME as expected %d, ignoring the nodeLabel %s", flow, serviceInstanceNum, numOfExistingPods, nodeLabelStrategy.Replicas, nodeLabelStrategy.NodeLabel)
-						}
+
+						glog.Infof("flow=%s serviceInstanceNum=%d Currently running %d pods is SAME as expected %d, ignoring the nodeLabel %s", flow, serviceInstanceNum, numOfExistingPods, nodeLabelStrategy.Replicas, nodeLabelStrategy.NodeLabel)
+
 					} else {
 						if flow == "DELETE" {
 							numOfPodsToBeDeleted := numOfExistingPods - nodeLabelStrategy.Replicas
@@ -460,16 +460,16 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 
 	for i, nodeStrategy := range StrategyList {
 
-		//	if AppLogLevel == "INFO" {
-		//		fmt.Println("nodeStrategy: ", nodeStrategy)
-		//	}
+		if AppLogLevel == "TRACE" {
+			fmt.Println("nodeStrategy: ", nodeStrategy)
+		}
 
 		nodeStrategyPartsList := strings.Split(nodeStrategy, ",")
 
-		//	if AppLogLevel == "INFO" {
-		//		fmt.Println("nodeStrategyPartsList: ", nodeStrategyPartsList)
-		//		fmt.Println("nodeStrategyPartsList len: ", len(nodeStrategyPartsList))
-		//	}
+		if AppLogLevel == "TRACE" {
+			fmt.Println("nodeStrategyPartsList: ", nodeStrategyPartsList)
+			fmt.Println("nodeStrategyPartsList len: ", len(nodeStrategyPartsList))
+		}
 
 		base := 0
 		weight := 0
@@ -479,11 +479,11 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 		for _, nodeStrategyPart := range nodeStrategyPartsList {
 
 			nodeStrategySubPartList := strings.Split(nodeStrategyPart, "=")
-			//	if AppLogLevel == "INFO" {
-			//		fmt.Println("nodeStrategyPart: ", nodeStrategyPart)
-			//		fmt.Println("nodeStrategySubPartList: ", nodeStrategySubPartList)
-			//		fmt.Println("nodeStrategySubPartList len: ", len(nodeStrategySubPartList))
-			//	}
+			if AppLogLevel == "TRACE" {
+				fmt.Println("nodeStrategyPart: ", nodeStrategyPart)
+				fmt.Println("nodeStrategySubPartList: ", nodeStrategySubPartList)
+				fmt.Println("nodeStrategySubPartList len: ", len(nodeStrategySubPartList))
+			}
 
 			if nodeStrategySubPartList[0] == "base" {
 
@@ -509,9 +509,9 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 				//replicaCount = base
 				numOfReplicas = numOfReplicas - base
 
-				//	if AppLogLevel == "INFO" {
-				//		fmt.Println("base=", base)
-				//	}
+				if AppLogLevel == "TRACE" {
+					fmt.Println("base=", base)
+				}
 
 			} else if nodeStrategySubPartList[0] == "weight" {
 
@@ -523,15 +523,15 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 				}
 				totalWeight += weight
 
-				//	if AppLogLevel == "INFO" {
-				//		fmt.Println("weight=", weight)
-				//	}
+				if AppLogLevel == "TRACE" {
+					fmt.Println("weight=", weight)
+				}
 
 			} else {
 				nodeLabel = nodeStrategyPart
-				//	if AppLogLevel == "INFO" {
-				//		glog.Infof("label key=%s value=%s\n", nodeStrategySubPartList[0], nodeStrategySubPartList[1])
-				//	}
+				if AppLogLevel == "TRACE" {
+					glog.Infof("label key=%s value=%s\n", nodeStrategySubPartList[0], nodeStrategySubPartList[1])
+				}
 			}
 		}
 
@@ -554,11 +554,11 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 
 	}
 
-	//	if AppLogLevel == "INFO" {
+	//	if AppLogLevel == "TRACE" {
 	//		glog.Infof("nodeLabelStrategyList=%v \n", nodeLabelStrategyList)
-	//glog.Infof("nodeLabelToWights=%v\n", nodeLabelToWights)
+	//		glog.Infof("nodeLabelToWights=%v\n", nodeLabelToWights)
 	//		glog.Infof("numOfBaseValues = %v totalWeight=%v  replicaCount=%v numOfReplicas=%v \n", numOfBaseValues, totalWeight, replicaCount, numOfReplicas)
-	//glog.Infof("podScheduleStrategy = %v", podScheduleStrategy)
+	//		glog.Infof("podScheduleStrategy = %v", podScheduleStrategy)
 	//	}
 
 	if numOfReplicas > 0 {
@@ -573,20 +573,20 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 		//numOfReplicas = numOfReplicas - weightReplicas
 
 		totalNumOfLables := len(nodeLabelStrategyList)
-		//	if AppLogLevel == "INFO" {
-		//		glog.Infof("baseNodeLabel=%s baseReplicas = %v replicaCount=%v numOfReplicas=%v totalNumOfLables=%v\n", baseNodeLabel, baseReplicas, replicaCount, numOfReplicas, totalNumOfLables)
-		//	}
+		if AppLogLevel == "TRACE" {
+			glog.Infof("baseNodeLabel=%s baseReplicas = %v replicaCount=%v numOfReplicas=%v totalNumOfLables=%v\n", baseNodeLabel, baseReplicas, replicaCount, numOfReplicas, totalNumOfLables)
+		}
 
 		labelNum := 0
-		//weightReplicas := 0
+		//	weightReplicas := 0
 
 		for index, nodeLabelStrategy := range nodeLabelStrategyList {
 
 			if index != baseNodeLabelIndex {
 				//weight := nodeLabelStrategy.Weight
-				//	if AppLogLevel == "INFO" {
-				//		glog.Infof("labelNum=%v nodeLabelStrategy= %v totalWeight=%v replicaCount=%v numOfReplicas=%v\n", labelNum, nodeLabelStrategy, totalWeight, replicaCount, numOfReplicas)
-				//	}
+				if AppLogLevel == "TRACE" {
+					glog.Infof("labelNum=%v nodeLabelStrategy= %v totalWeight=%v replicaCount=%v numOfReplicas=%v\n", labelNum, nodeLabelStrategy, totalWeight, replicaCount, numOfReplicas)
+				}
 				if labelNum == totalNumOfLables-2 {
 					weightReplicas = numOfReplicas - replicaCount
 				} else {
@@ -600,26 +600,26 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 				nodeLabelStrategyList[index] = nodeLabelStrategy
 
 				//numOfReplicas -= weightReplicas
-				//	if AppLogLevel == "INFO" {
-				//		glog.Infof("labelNum=%v weightReplicas: %v nodeLabelStrategy=%v,  replicaCount=%v, numOfReplicas=%v\n", labelNum, weightReplicas, nodeLabelStrategy, replicaCount, numOfReplicas)
-				//	}
+				if AppLogLevel == "TRACE" {
+					glog.Infof("labelNum=%v weightReplicas: %v nodeLabelStrategy=%v,  replicaCount=%v, numOfReplicas=%v\n", labelNum, weightReplicas, nodeLabelStrategy, replicaCount, numOfReplicas)
+				}
 
 				labelNum += 1
 			}
 
 		}
 
-		//	if AppLogLevel == "INFO" {
-		//	glog.Infof("nodeLabelStrategyList = %v\n", nodeLabelStrategyList)
-		//glog.Infof("numOfBaseValues = %v totalWeight=%v numOfReplicas=%v replicaCount=%v\n", numOfBaseValues, totalWeight, numOfReplicas, replicaCount)
-		//	}
+		if AppLogLevel == "TRACE" {
+			glog.Infof("nodeLabelStrategyList = %v\n", nodeLabelStrategyList)
+			glog.Infof("numOfBaseValues = %v totalWeight=%v numOfReplicas=%v replicaCount=%v\n", numOfBaseValues, totalWeight, numOfReplicas, replicaCount)
+		}
 
 	}
 
-	//	if AppLogLevel == "INFO" {
-	//		glog.Infof("nodeLabelStrategyList = %v\n", nodeLabelStrategyList)
-	//glog.Infof("numOfBaseValues = %v totalWeight=%v numOfReplicas=%v replicaCount=%v\n", numOfBaseValues, totalWeight, numOfReplicas, replicaCount)
-	//	}
+	if AppLogLevel == "TRACE" {
+		glog.Infof("nodeLabelStrategyList = %v\n", nodeLabelStrategyList)
+		glog.Infof("numOfBaseValues = %v totalWeight=%v numOfReplicas=%v replicaCount=%v\n", numOfBaseValues, totalWeight, numOfReplicas, replicaCount)
+	}
 
 	return nodeLabelStrategyList, result
 }
@@ -629,9 +629,9 @@ func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel str
 	//numOfExistingPods := 0
 	ExistingPodsList := []string{}
 
-	//	if AppLogLevel == "INFO" {
-	//		glog.Infof("serviceInstanceNum=%d GetNumOfExistingPods namespace=%v deploymentName=%v nodeLabel=%v\n", serviceInstanceNum, namespace, deploymentName, nodeLabel)
-	//	}
+	if AppLogLevel == "TRACE" {
+		glog.Infof("serviceInstanceNum=%d GetNumOfExistingPods namespace=%v deploymentName=%v nodeLabel=%v\n", serviceInstanceNum, namespace, deploymentName, nodeLabel)
+	}
 	nodeLabelSplit := strings.Split(nodeLabel, "=")
 	//glog.Infof("GetNumOfExistingPods nodeLabelSplit=%v\n", nodeLabelSplit)
 
@@ -672,7 +672,7 @@ func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel str
 func RunBatchJobForPodsCleanup() {
 
 	//result := false
-
+	var isNSlabeled bool
 	cleanupServiceInstanceNum := 1
 
 	for {
@@ -686,7 +686,19 @@ func RunBatchJobForPodsCleanup() {
 		for _, ns := range namespcaeData.Items {
 			//fmt.Println(ns)
 
-			if isNamespaceAllowed(ns.Name) {
+			isNSlabeled = false
+
+			for key, value := range ns.Labels {
+				//glog.Infof("key=%s value=%s\n", key, value)
+				if key == "custom-kube-scheduler-webhook" && value == "enabled" {
+					isNSlabeled = true
+					//glog.Infof("namespace %is isNSlabeled=%s\n", ns.Name, isNSlabeled)
+				}
+
+			}
+
+			if isNamespaceAllowed(ns.Name) && isNSlabeled {
+
 				deploymentsClient := clientset.AppsV1().Deployments(ns.Name)
 				//fmt.Println(i, ns.Name)
 				//fmt.Printf("Listing deployments in namespace %s:\n", ns.Name)
@@ -704,7 +716,18 @@ func RunBatchJobForPodsCleanup() {
 		}
 
 		cleanupServiceInstanceNum += 1
-		time.Sleep(30 * time.Second)
+
+		ReconcilerIntervalPeriod, err := strconv.Atoi(os.Getenv("RECONCILER_PERIOD"))
+
+		if err == nil {
+			ReconcilerIntervalPeriod = 5
+		}
+
+		fmt.Printf("ReconcilerIntervalPeriod=%d\n", ReconcilerIntervalPeriod)
+		d := time.Duration(ReconcilerIntervalPeriod * 1000 * 1000 * 1000)
+		//fmt.Println(d)
+		//fmt.Printf("Sleeping for %d\n", d)
+		time.Sleep(d)
 	}
 
 }

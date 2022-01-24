@@ -32,6 +32,8 @@ export CLUSTER_NAME=eksworkshop5
 git clone https://github.com/jalawala/custom-kubernetes-scheduler.git
 cd custom-kubernetes-scheduler/admissionwebhook
 
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 000474600478.dkr.ecr.us-east-1.amazonaws.com
 ```
 
 ## Create EKS Cluster
