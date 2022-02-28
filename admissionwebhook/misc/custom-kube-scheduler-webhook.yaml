@@ -148,15 +148,15 @@ spec:
       labels:
         app: custom-kube-scheduler-webhook
     spec:
-      nodeSelector:
-        eks.amazonaws.com/nodegroup: ng    
       serviceAccountName: custom-kube-scheduler-sa
       containers:
         - name: custom-kube-scheduler-webhook
           image: 000474600478.dkr.ecr.us-east-1.amazonaws.com/custom-kube-scheduler-webhook
           env:
           - name: LOG_LEVEL
-            value: "INFO"
+            value: "INFO"  # allowed values are "INFO", "TRACE"
+          - name: RECONCILER_PERIOD
+            value: 5
           - name: BLOCKLISTED_NAMESPACE_LIST
             value: "kube-system,kube-public,default"          
           imagePullPolicy: Always

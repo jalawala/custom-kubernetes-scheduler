@@ -1,7 +1,5 @@
 #!/bin/bash
-# Image URL to use all building/pushing image targets;
-# Use your own docker registry and image name for dev/test by overridding the
-# IMAGE_REPO, IMAGE_NAME and IMAGE_TAG environment variable.
+
 IMAGE_REPO ?= ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
 IMAGE_NAME ?= custom-kube-scheduler-webhook
 IMAGE_TAG ?= latest
