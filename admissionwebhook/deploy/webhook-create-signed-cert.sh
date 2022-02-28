@@ -63,6 +63,10 @@ fi
 
 csrName=${service}.${namespace}
 
+tmpdir=$(mktemp -d)
+echo "creating certs in tmpdir ${tmpdir} "
+
+
 cat <<EOF | cfssl genkey - | cfssljson -bare server
 {
   "hosts": [
@@ -78,7 +82,8 @@ cat <<EOF | cfssl genkey - | cfssljson -bare server
 }
 EOF
 
-
+mv server.csr ${tmpdir}
+mv server-key.pem ${tmpdir}
 
 
 # clean-up any previously created CSR for our service. Ignore errors if not present.
@@ -94,7 +99,7 @@ metadata:
 spec:
   groups:
   - system:authenticated
-  request: $(cat server.csr | base64 | tr -d '\n')
+  request: $(cat "${tmpdir}/server.csr"  | base64 | tr -d '\n')
   usages:
   - digital signature
   - key encipherment
@@ -132,7 +137,7 @@ if [[ ${serverCert} == '' ]]; then
 fi
 
 
-kubectl get csr $csrName -o jsonpath='{.status.certificate}' | base64 --decode > server.crt
+kubectl get csr $csrName -o jsonpath='{.status.certificate}' | base64 --decode > "${tmpdir}/server.crt"
 
 
 # clean-up any previously created CSR for our service. Ignore errors if not present.
@@ -140,5 +145,5 @@ kubectl delete secret ${secret} -n ${namespace} 2>/dev/null || true
 
 
 # create the secret with CA cert and server cert/key
-kubectl create secret tls ${secret} --cert server.crt --key server-key.pem -n ${namespace}
+kubectl create secret tls ${secret} --cert "${tmpdir}/server.crt"  --key "${tmpdir}/server-key.pem" -n ${namespace}
 

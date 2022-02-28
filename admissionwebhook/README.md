@@ -94,7 +94,7 @@ kubectl create secret tls server --cert server.crt --key server-key.pem -n custo
 
 ./deploy/webhook-create-signed-cert.sh \
     --service custom-kube-scheduler-webhook \
-    --secret custom-kube-scheduler-webhook-certs-2 \
+    --secret custom-kube-scheduler-webhook-certs-4 \
     --namespace custom-kube-scheduler-webhook
     
     
