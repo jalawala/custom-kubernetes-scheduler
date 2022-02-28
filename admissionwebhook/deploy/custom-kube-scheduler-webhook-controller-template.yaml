@@ -173,4 +173,4 @@ spec:
       volumes:
       - name: webhook-certs
         secret:
-          secretName: custom-kube-scheduler-webhook-certs
+          secretName: $SECRET

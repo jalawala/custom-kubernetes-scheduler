@@ -19,6 +19,86 @@ Ensure that below tools are installed in your environment.
 Set few environment variables
 
 ```bash
+
+curl -o cfssl https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.6.1/darwin/cfssl
+curl -o cfssljson https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.6.1/darwin/cfssljson
+
+wget https://github.com/cloudflare/cfssl/releases/download/v1.6.1/cfssl_1.6.1_linux_amd64
+wget https://github.com/cloudflare/cfssl/releases/download/v1.6.1/cfssljson_1.6.1_linux_amd64
+
+chmod +x cfssl_1.6.1_linux_amd64
+chmod +x cfssljson_1.6.1_linux_amd64
+
+sudo mv cfssl_1.6.1_linux_amd64 /usr/local/bin/cfssl
+sudo mv cfssljson_1.6.1_linux_amd64 /usr/local/bin/cfssljson
+
+export SERVICE="custom-kube-scheduler-webhook"
+export NAMESPACE="custom-kube-scheduler-webhook"
+
+cat <<EOF | cfssl genkey - | cfssljson -bare server
+{
+  "hosts": [
+    "$SERVICE",
+    "$SERVICE.$NAMESPACE",
+    "$SERVICE.$NAMESPACE.svc"
+  ],
+  "CN": "$SERVICE.$NAMESPACE.svc",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  }
+}
+EOF
+
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: my-svc.my-namespace
+spec:
+  request: $(cat server.csr | base64 | tr -d '\n')
+  signerName: example.com/serving
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+EOF
+
+csrName="${SERVICE}.${NAMESPACE}-1"
+
+cat <<EOF | kubectl create -f -
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: ${csrName}
+spec:
+  groups:
+  - system:authenticated
+  request: $(cat server.csr | base64 | tr -d '\n')
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+EOF
+
+
+kubectl describe csr $csrName
+kubectl certificate approve $csrName
+
+kubectl get csr $csrName -oyaml
+kubectl get csr $csrName -o jsonpath='{.status.certificate}' | base64 --decode > server.crt
+
+
+kubectl create secret tls server --cert server.crt --key server-key.pem -n custom-kube-scheduler-webhook
+
+
+./deploy/webhook-create-signed-cert.sh \
+    --service custom-kube-scheduler-webhook \
+    --secret custom-kube-scheduler-webhook-certs-2 \
+    --namespace custom-kube-scheduler-webhook
+    
+    
+    
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 
@@ -27,6 +107,35 @@ export CLUSTER_NAME=eks-ref-cluster
 export ECR_REPO=custom-kube-scheduler-webhook
 
 export CLUSTER_NAME=eksworkshop5
+
+
+kubectl apply -f - <<EOF
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    service: ambassador
+EOF
+
+
+
+kubectl apply -f - <<EOF
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test2
+---
+EOF
+
 
 
 git clone https://github.com/jalawala/custom-kubernetes-scheduler.git
