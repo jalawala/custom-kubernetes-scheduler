@@ -1,6 +1,6 @@
 #!/bin/bash
 IMAGE_REPO="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-IMAGE_NAME="custom-kube-scheduler-webhook3"
+IMAGE_NAME=${ECR_REPO}
 
 
 export ECR_REPO_URI=$(aws ecr describe-repositories --repository-name ${IMAGE_NAME}  | jq -r '.repositories[0].repositoryUri')

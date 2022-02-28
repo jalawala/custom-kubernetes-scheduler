@@ -1,7 +1,7 @@
 #!/bin/bash
 
-IMAGE_REPO ?= ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
-IMAGE_NAME ?= custom-kube-scheduler-webhook
+IMAGE_REPO ?= ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+IMAGE_NAME ?= ${ECR_REPO}
 IMAGE_TAG ?= latest
 
 
