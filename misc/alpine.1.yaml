@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine
+  namespace: injection
+  labels:
+    app: alpine
+  annotations:
+    UseCustomKubeScheduler: 'true'
+    CustomPodScheduleStrategy: 'nodesize=od4vcpu16gb,base=1,weight=0:nodesize=spot4vcpu16gb,weight=1:nodesize=spot8vcpu32gb,weight=1'
+    sidecar-injector-webhook.morven.me/inject: 'yes'    
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+      annotations:
+         sidecar-injector-webhook.morven.me/inject: 'yes'         
+    spec:
+      containers:
+        - name: alpine
+          image: alpine
+          imagePullPolicy: IfNotPresent
+          args:
+          - sleep
+          - infinity
+          - 2>&1
