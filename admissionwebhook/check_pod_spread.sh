@@ -1,17 +1,9 @@
 #!/bin/bash
 
-
-#sleep 1
-#kubectl get pods -n injection -l app=nginx | jq -r '.'
-
-#export LABEL1="karpenter.sh/capacity-type:on-demand"
-#export LABEL2="karpenter.sh/capacity-type:spot"
 export LABEL1="on-demand"
 export LABEL2="spot"
 
 export NAMESPACE="test"
-
-#kubectl get pods -n injection -l app=nginx -o jsonpath='{.items[*].spec.nodeSelector}' | grep $LABEL1
 
 kubectl get pod -n $NAMESPACE
 PODS=$(kubectl get pod -n $NAMESPACE | wc -l)

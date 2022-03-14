@@ -17,13 +17,10 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/golang/glog"
 	"k8s.io/api/admission/v1beta1"
-	//	admissionregistrationv1beta1 "k8s.io/api/admissionregistration/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
-	//"k8s.io/kubernetes/pkg/apis/core/v1"
-	//"k8s.io/client-go/pkg/api/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
@@ -56,7 +53,6 @@ const (
 
 type WebhookServer struct {
 	sync.Mutex
-	//sidecarConfig *Config
 	server *http.Server
 }
 
@@ -167,9 +163,6 @@ func updateAnnotation(target map[string]string, added map[string]string) (patch 
 func createPatch(pod *corev1.Pod, nodeselectors map[string]string) ([]byte, error) {
 	var patch []patchOperation
 
-	//patch = append(patch, addContainer(pod.Spec.Containers, sidecarConfig.Containers, "/spec/containers")...)
-	//patch = append(patch, addVolume(pod.Spec.Volumes, sidecarConfig.Volumes, "/spec/volumes")...)
-	//patch = append(patch, updateAnnotation(pod.Annotations, annotations)...)
 	patch = append(patch, updateNodeSelectors(pod.Spec.NodeSelector, nodeselectors, "/spec/nodeSelector")...)
 
 	return json.Marshal(patch)
@@ -189,16 +182,8 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview, serviceInstanceN
 		}
 	}
 
-	//glog.Infof("mutate: req=%v\n", req)
-	//glog.Infof("mutate: pod=%v\n", pod)
 	glog.Infof("serviceInstanceNum=%d AdmissionReview for Kind=%v Name=%v Namespace=%v UID=%v patchOperation=%v",
 		serviceInstanceNum, req.Kind, req.Name, req.Namespace, req.UID, req.Operation)
-	//glog.Infof("AdmissionReview for Kind=%v, Namespace=%v Name=%v (%v) UID=%v patchOperation=%v UserInfo=%v",
-	//	req.Kind, req.Namespace, req.Name, pod.Name, req.UID, req.Operation, req.UserInfo)
-
-	//glog.Infof("mutate Pod Kind=%v, GenerateName=%v Namespace=%v Labels=%v Annotations=%v Spec=%v Status=%v",
-
-	//pod.Kind, pod.GenerateName, pod.Namespace, pod.Labels, pod.Annotations, pod.Spec, pod.Status)
 
 	// determine whether to perform mutation
 	if !mutationRequired(ignoredNamespaces, &pod.ObjectMeta) {
@@ -209,9 +194,6 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview, serviceInstanceN
 	}
 
 	// Workaround: https://github.com/kubernetes/kubernetes/issues/57982
-	//applyDefaultsWorkaround(whsvr.sidecarConfig.Containers, whsvr.sidecarConfig.Volumes)
-	//annotations := map[string]string{admissionWebhookAnnotationStatusKey: "injected"}
-	//nodeselectors := map[string]string{"eks.amazonaws.com/capacityType": "SPOT"}
 	nodeselectors, ok := GetNodeLabel(req.Namespace, pod.GenerateName, pod.Labels["pod-template-hash"], serviceInstanceNum)
 	if !ok {
 		glog.Infof("serviceInstanceNum=%d Skipping mutation for %s/%s due to GetNodeLabel failure", serviceInstanceNum, pod.Namespace, pod.Name)
@@ -247,8 +229,6 @@ func (whsvr *WebhookServer) serve(w http.ResponseWriter, r *http.Request) {
 
 	whsvr.Lock()
 	defer whsvr.Unlock()
-	//glog.Infof("serve: blocking on the channel")
-	//<-done
 
 	serviceInstanceNum := serviceInstance
 	serviceInstance++
@@ -259,9 +239,6 @@ func (whsvr *WebhookServer) serve(w http.ResponseWriter, r *http.Request) {
 			body = data
 		}
 	}
-
-	//glog.Infof("serve: r=%v\n", r.Body)
-	//glog.Infof("serve: w=%v\n", string(w))
 
 	if len(body) == 0 {
 		glog.Error("empty body")
@@ -304,18 +281,11 @@ func (whsvr *WebhookServer) serve(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("could not encode response: %v", err), http.StatusInternalServerError)
 	}
 
-	//glog.Infof("serve: resp=%v\n", string(resp))
-	//	glog.Infof("Sleepig for 15 Seconds before write reponse ...")
-	//	time.Sleep(15 * time.Second)
-	//glog.Infof("After Sleep: Ready to write reponse ...")
 	glog.Infof("Ready to write reponse ...")
 	if _, err := w.Write(resp); err != nil {
 		glog.Errorf("Can't write response: %v", err)
 		http.Error(w, fmt.Sprintf("could not write response: %v", err), http.StatusInternalServerError)
 	}
-
-	//glog.Infof("serve: setting true to channel")
-	//done <- true
 
 }
 
@@ -328,11 +298,8 @@ func GetNodeLabel(nameSpace string, podGenerateName string, podTemplateHash stri
 		panic(err2.Error())
 	}
 
-	//var numOfReplicas int
-
 	result := false
 	nodeselectors := make(map[string]string)
-	//	deploymentAnnotations := map[string]string{}
 
 	if AppLogLevel == "INFO" {
 		glog.Infof("serviceInstanceNum=%d GetNodeLabel  nameSpace=%v podGenerateName=%v podTemplateHash=%v", serviceInstanceNum, nameSpace, podGenerateName, podTemplateHash)
@@ -341,7 +308,6 @@ func GetNodeLabel(nameSpace string, podGenerateName string, podTemplateHash stri
 	podNameSplitList := strings.Split(podGenerateName, podTemplateHash)
 	fmt.Println("")
 	deploymentName := strings.Trim(podNameSplitList[0], "-")
-	//glog.Infof("deploymentName = %s\n", deploymentName)
 
 	nodeselectors, result = ProcessDeployment(nameSpace, deploymentName, serviceInstanceNum, "CREATE")
 
@@ -362,22 +328,21 @@ func ProcessDeployment(nameSpace string, deploymentName string, serviceInstanceN
 	if getErr != nil {
 		panic(fmt.Errorf("Failed to get latest version of Deployment: %v", getErr))
 	}
-	//fmt.Println("deploymentData=", deploymentData)
-	deploymentAnnotations = deploymentData.Annotations
-	//fmt.Println("deploymentAnnotations=", deploymentAnnotations)
 
-	if IsCustomSchedulingDefined, ok := deploymentAnnotations["UseCustomKubeScheduler"]; ok && IsCustomSchedulingDefined == "true" {
-		strategy := deploymentAnnotations["CustomPodScheduleStrategy"]
+	deploymentAnnotations = deploymentData.Annotations
+
+	if strategy, ok := deploymentAnnotations["custom-pod-schedule-strategy"]; ok && strategy != "" {
+
 		numOfReplicas = int(*deploymentData.Spec.Replicas)
-		if AppLogLevel == "INFO" {
+		if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
 			glog.Infof("flow=%s serviceInstanceNum=%d Found a deployment %s in namespace %s with total replicas %d and strategy=%s", flow, serviceInstanceNum, deploymentName, nameSpace, numOfReplicas, strategy)
 		}
-		//glog.Infof("\nnumOfReplicas=%d\n", numOfReplicas)
+
 		if nodeLabelStrategyList, ok := GetPodsCustomSchedulingStrategyList(strategy, numOfReplicas, serviceInstanceNum); ok {
-			if AppLogLevel == "INFO" {
+			if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
 				glog.Infof("flow=%s serviceInstanceNum=%d nodeLabelStrategyList=%v", flow, serviceInstanceNum, nodeLabelStrategyList)
 			}
-			//for nodeLabel, replicas := range customSchedulingStrategyMap {
+
 			for _, nodeLabelStrategy := range nodeLabelStrategyList {
 				if AppLogLevel == "TRACE" {
 					glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s needs %d replicas\n", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, nodeLabelStrategy.Replicas)
@@ -386,21 +351,24 @@ func ProcessDeployment(nameSpace string, deploymentName string, serviceInstanceN
 				numOfExistingPods := len(ExistingPodsList)
 				if result {
 
-					glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s currently runs %d pods", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, numOfExistingPods)
+					if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
+						glog.Infof("flow=%s serviceInstanceNum=%d nodeLabel=%s currently runs %d pods", flow, serviceInstanceNum, nodeLabelStrategy.NodeLabel, numOfExistingPods)
+					}
 
 					if numOfExistingPods < nodeLabelStrategy.Replicas {
 						if flow == "CREATE" {
 							glog.Infof("flow=%s serviceInstanceNum=%d Currently running %d pods is less than expected %d, scheduling pod on nodeLabel %s", flow, serviceInstanceNum, numOfExistingPods, nodeLabelStrategy.Replicas, nodeLabelStrategy.NodeLabel)
 							nodeLabelSplit := strings.Split(nodeLabelStrategy.NodeLabel, "=")
-							//glog.Infof("nodeLabelSplit=%v\n", nodeLabelSplit)
+
 							nodeselectors[nodeLabelSplit[0]] = nodeLabelSplit[1]
-							//result = true
 							return nodeselectors, result
 						}
 
 					} else if numOfExistingPods == nodeLabelStrategy.Replicas {
 
-						glog.Infof("flow=%s serviceInstanceNum=%d Currently running %d pods is SAME as expected %d, ignoring the nodeLabel %s", flow, serviceInstanceNum, numOfExistingPods, nodeLabelStrategy.Replicas, nodeLabelStrategy.NodeLabel)
+						if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
+							glog.Infof("flow=%s serviceInstanceNum=%d Currently running %d pods is SAME as expected %d, ignoring the nodeLabel %s", flow, serviceInstanceNum, numOfExistingPods, nodeLabelStrategy.Replicas, nodeLabelStrategy.NodeLabel)
+						}
 
 					} else {
 						if flow == "DELETE" {
@@ -421,36 +389,23 @@ func ProcessDeployment(nameSpace string, deploymentName string, serviceInstanceN
 		}
 	}
 
-	//result = true
 	return nodeselectors, result
 }
 
 func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, serviceInstanceNum int) ([]NodeLabelStrategy, bool) {
 
-	//DEBUG_ENABLED := false
-	//DEBUG_ENABLED := true
-
 	nodeLabelStrategyList := []NodeLabelStrategy{}
-	//	nodeLabelStrategy := NodeLabelStrategy{}
 
 	result := true
 
-	if AppLogLevel == "INFO" {
+	if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
 		glog.Infof("serviceInstanceNum=%d Strategy=%s numOfReplicas=%d\n", serviceInstanceNum, Strategy, numOfReplicas)
 	}
 
-	//podScheduleStrategy := CustomPodScheduleStrategy{}
-
-	//nodeLabelToReplicas := make(map[string]int)
-	//nodeLabelToWights := make(map[string]int)
 	totalWeight := 0
 	replicaCount := 0
 
 	StrategyList := strings.Split(Strategy, ":")
-
-	//	if AppLogLevel == "INFO" {
-	//		fmt.Println("StrategyList=", StrategyList)
-	//
 
 	numOfBaseValues := 0
 
@@ -490,7 +445,7 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 				if numOfBaseValues != 0 {
 					fmt.Println("base value cannot be non-zero for more than node strategy")
 					result = false
-					//exit(1)
+
 				} else {
 					numOfBaseValues += 1
 				}
@@ -506,7 +461,6 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 					base = numOfReplicas
 				}
 
-				//replicaCount = base
 				numOfReplicas = numOfReplicas - base
 
 				if AppLogLevel == "TRACE" {
@@ -548,29 +502,17 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 			Weight:    weight,
 		})
 
-		//nodeLabelToWights[nodeLabel] = weight
-		//podScheduleStrategy = append(podScheduleStrategy, )
-		//nodeLabelToReplicas[nodeLabel] = base
-
 	}
 
-	//	if AppLogLevel == "TRACE" {
-	//		glog.Infof("nodeLabelStrategyList=%v \n", nodeLabelStrategyList)
-	//		glog.Infof("nodeLabelToWights=%v\n", nodeLabelToWights)
-	//		glog.Infof("numOfBaseValues = %v totalWeight=%v  replicaCount=%v numOfReplicas=%v \n", numOfBaseValues, totalWeight, replicaCount, numOfReplicas)
-	//		glog.Infof("podScheduleStrategy = %v", podScheduleStrategy)
-	//	}
-
 	if numOfReplicas > 0 {
-		//weight := nodeLabelToWights[baseNodeLabel]
+
 		weight := nodeLabelStrategyList[baseNodeLabelIndex].Weight
 		baseReplicas := nodeLabelStrategyList[baseNodeLabelIndex].Replicas
 		weightReplicas := int(numOfReplicas * weight / totalWeight)
 		baseReplicas = baseReplicas + weightReplicas
 		replicaCount = weightReplicas
-		//nodeLabelToReplicas[baseNodeLabel] = baseReplicas
+
 		nodeLabelStrategyList[baseNodeLabelIndex].Replicas = baseReplicas
-		//numOfReplicas = numOfReplicas - weightReplicas
 
 		totalNumOfLables := len(nodeLabelStrategyList)
 		if AppLogLevel == "TRACE" {
@@ -578,28 +520,26 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 		}
 
 		labelNum := 0
-		//	weightReplicas := 0
 
 		for index, nodeLabelStrategy := range nodeLabelStrategyList {
 
 			if index != baseNodeLabelIndex {
-				//weight := nodeLabelStrategy.Weight
+
 				if AppLogLevel == "TRACE" {
 					glog.Infof("labelNum=%v nodeLabelStrategy= %v totalWeight=%v replicaCount=%v numOfReplicas=%v\n", labelNum, nodeLabelStrategy, totalWeight, replicaCount, numOfReplicas)
 				}
 				if labelNum == totalNumOfLables-2 {
 					weightReplicas = numOfReplicas - replicaCount
 				} else {
-					//weightReplicas = math.RoundToEven(numOfReplicas * (weight / totalWeight))
+
 					weightReplicas = int(numOfReplicas * nodeLabelStrategy.Weight / totalWeight)
 				}
 
 				nodeLabelStrategy.Replicas += weightReplicas
 				replicaCount = replicaCount + weightReplicas
-				//nodeLabelToReplicas[key] = replicas
+
 				nodeLabelStrategyList[index] = nodeLabelStrategy
 
-				//numOfReplicas -= weightReplicas
 				if AppLogLevel == "TRACE" {
 					glog.Infof("labelNum=%v weightReplicas: %v nodeLabelStrategy=%v,  replicaCount=%v, numOfReplicas=%v\n", labelNum, weightReplicas, nodeLabelStrategy, replicaCount, numOfReplicas)
 				}
@@ -626,14 +566,13 @@ func GetPodsCustomSchedulingStrategyList(Strategy string, numOfReplicas int, ser
 
 func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel string, serviceInstanceNum int) ([]string, bool) {
 	result := true
-	//numOfExistingPods := 0
+
 	ExistingPodsList := []string{}
 
 	if AppLogLevel == "TRACE" {
 		glog.Infof("serviceInstanceNum=%d GetNumOfExistingPods namespace=%v deploymentName=%v nodeLabel=%v\n", serviceInstanceNum, namespace, deploymentName, nodeLabel)
 	}
 	nodeLabelSplit := strings.Split(nodeLabel, "=")
-	//glog.Infof("GetNumOfExistingPods nodeLabelSplit=%v\n", nodeLabelSplit)
 
 	listOptions := metav1.ListOptions{}
 
@@ -644,18 +583,15 @@ func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel str
 	}
 
 	for _, pod := range pods.Items {
-		//for pod := range pods.Items {
 
 		if strings.Contains(pod.Name, deploymentName) {
 
 			nodeSelectorMap := pod.Spec.NodeSelector
-			//	if AppLogLevel == "INFO" {
-			//		glog.Infof("serviceInstanceNum=%d Existing pod i=%d Name=%v nodeSelectorMap=%v \n", serviceInstanceNum, i+1, pod.Name, nodeSelectorMap)
-			//	}
+
 			for nodeLabelKey, nodeLabelValue := range nodeSelectorMap {
 				if nodeLabelKey == nodeLabelSplit[0] && nodeLabelValue == nodeLabelSplit[1] {
 					if pod.DeletionTimestamp == nil {
-						//numOfExistingPods += 1
+
 						ExistingPodsList = append(ExistingPodsList, pod.Name)
 					}
 
@@ -671,7 +607,6 @@ func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel str
 
 func RunBatchJobForPodsCleanup() {
 
-	//result := false
 	var isNSlabeled bool
 	cleanupServiceInstanceNum := 1
 
@@ -684,15 +619,14 @@ func RunBatchJobForPodsCleanup() {
 		}
 
 		for _, ns := range namespcaeData.Items {
-			//fmt.Println(ns)
 
 			isNSlabeled = false
 
 			for key, value := range ns.Labels {
-				//glog.Infof("key=%s value=%s\n", key, value)
+
 				if key == "custom-kube-scheduler-webhook" && value == "enabled" {
 					isNSlabeled = true
-					//glog.Infof("namespace %is isNSlabeled=%s\n", ns.Name, isNSlabeled)
+
 				}
 
 			}
@@ -700,14 +634,12 @@ func RunBatchJobForPodsCleanup() {
 			if isNamespaceAllowed(ns.Name) && isNSlabeled {
 
 				deploymentsClient := clientset.AppsV1().Deployments(ns.Name)
-				//fmt.Println(i, ns.Name)
-				//fmt.Printf("Listing deployments in namespace %s:\n", ns.Name)
+
 				list, err := deploymentsClient.List(context.TODO(), metav1.ListOptions{})
 				if err != nil {
 					panic(err)
 				}
 				for _, d := range list.Items {
-					//fmt.Printf("j=%d  Name=%s Replicas %d \n", j, d.Name, *d.Spec.Replicas)
 					_, _ = ProcessDeployment(ns.Name, d.Name, cleanupServiceInstanceNum, "DELETE")
 
 				}
@@ -725,22 +657,18 @@ func RunBatchJobForPodsCleanup() {
 
 		fmt.Printf("ReconcilerIntervalPeriod=%d\n", ReconcilerIntervalPeriod)
 		d := time.Duration(ReconcilerIntervalPeriod * 1000 * 1000 * 1000)
-		//fmt.Println(d)
-		//fmt.Printf("Sleeping for %d\n", d)
+
 		time.Sleep(d)
 	}
 
 }
 
 func isNamespaceAllowed(ns string) bool {
-	// skip special kubernete system namespaces
-
-	//	glog.Infof("isNamespaceAllowed AppLogLevel=%s ns=%s BlockedNameSpaceList=%v", AppLogLevel, ns, BlockedNameSpaceList)
 
 	for _, namespace := range BlockedNameSpaceList {
-		//	glog.Infof("isNamespaceAllowed,namespace=%s,ns=%s,isNamespaceAllowed", namespace, ns)
+
 		if ns == namespace {
-			if AppLogLevel == "INFO" {
+			if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
 				glog.Infof("Skipping the namespace: %s", ns)
 			}
 			return false

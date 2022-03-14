@@ -5,8 +5,7 @@ metadata:
   name: nginx
   namespace: test
   annotations:
-    UseCustomKubeScheduler: 'true'
-    CustomPodScheduleStrategy: 'karpenter.sh/capacity-type=on-demand,base=2,weight=1:karpenter.sh/capacity-type=spot,weight=3'
+    custom-pod-schedule-strategy: 'karpenter.sh/capacity-type=on-demand,base=2,weight=1:karpenter.sh/capacity-type=spot,weight=3'
 spec:
   selector:
     matchLabels:
