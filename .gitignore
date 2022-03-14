@@ -12,5 +12,6 @@
 *.out
 .go/*
 admissionwebhook/.go/*
+misc/admissionwebhook/.go/*
 # Dependency directories (remove the comment below to include it)
 # vendor/
