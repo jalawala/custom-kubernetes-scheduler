@@ -9,15 +9,13 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 	"syscall"
 )
 
 var (
-	AppLogLevel              string
-	BlockedNameSpaceList     []string
-	ReconcilerIntervalPeriod int
+	AppLogLevel          string
+	BlockedNameSpaceList []string
 )
 
 /*
@@ -36,15 +34,10 @@ func main() {
 	flag.Parse()
 
 	AppLogLevel = os.Getenv("LOG_LEVEL")
-	ReconcilerIntervalPeriod, err := strconv.Atoi(os.Getenv("RECONCILER_PERIOD"))
-
-	if err == nil {
-		ReconcilerIntervalPeriod = 5
-	}
 
 	BlockedNameSpaceList = strings.Split(os.Getenv("BLOCKLISTED_NAMESPACE_LIST"), ",")
 
-	glog.Infof("AppLogLevel=%s BlockedNameSpaceList=%v ReconcilerIntervalPeriod=%d", AppLogLevel, BlockedNameSpaceList, ReconcilerIntervalPeriod)
+	glog.Infof("AppLogLevel=%s BlockedNameSpaceList=%v", AppLogLevel, BlockedNameSpaceList)
 
 	pair, err := tls.LoadX509KeyPair(parameters.certFile, parameters.keyFile)
 	if err != nil {
@@ -70,10 +63,6 @@ func main() {
 		if err := whsvr.server.ListenAndServeTLS("", ""); err != nil {
 			glog.Errorf("Failed to listen and serve webhook server: %v", err)
 		}
-	}()
-
-	go func() {
-		RunBatchJobForPodsCleanup()
 	}()
 
 	// listening OS shutdown singal

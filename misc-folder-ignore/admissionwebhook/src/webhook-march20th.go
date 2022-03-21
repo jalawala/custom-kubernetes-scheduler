@@ -5,16 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/ghodss/yaml"
-	"github.com/golang/glog"
 	"io/ioutil"
-	"k8s.io/api/admission/v1beta1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 	"log"
 	"net/http"
 	"os"
@@ -22,6 +13,16 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ghodss/yaml"
+	"github.com/golang/glog"
+	"k8s.io/api/admission/v1beta1"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 var (
@@ -574,8 +575,7 @@ func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel str
 	nodeLabelSplit := strings.Split(nodeLabel, "=")
 
 	listOptions := metav1.ListOptions{}
-	//time.Sleep(1 * time.Second)
-	time.Sleep(500 * time.Millisecond) // this is to give enough time for concurrent writes to etcd from other mutatting requests
+
 	pods, err := api.Pods(namespace).List(context.Background(), listOptions)
 	if err != nil {
 		result = false
@@ -603,6 +603,78 @@ func GetNumOfExistingPods(namespace string, deploymentName string, nodeLabel str
 	}
 
 	return ExistingPodsList, result
+}
+
+func RunBatchJobForPodsCleanup() {
+
+	var isNSlabeled bool
+	cleanupServiceInstanceNum := 1
+
+	for {
+
+		fmt.Printf("Starting RunBatchJobForPodsCleanup cleanupServiceInstanceNum = %d\n", cleanupServiceInstanceNum)
+		namespcaeData, getErr := api.Namespaces().List(context.TODO(), metav1.ListOptions{})
+		if getErr != nil {
+			panic(fmt.Errorf("Failed to get latest version of Deployment: %v", getErr))
+		}
+
+		for _, ns := range namespcaeData.Items {
+
+			isNSlabeled = false
+
+			for key, value := range ns.Labels {
+
+				if key == "custom-kube-scheduler-webhook" && value == "enabled" {
+					isNSlabeled = true
+
+				}
+
+			}
+
+			if isNamespaceAllowed(ns.Name) && isNSlabeled {
+
+				deploymentsClient := clientset.AppsV1().Deployments(ns.Name)
+
+				list, err := deploymentsClient.List(context.TODO(), metav1.ListOptions{})
+				if err != nil {
+					panic(err)
+				}
+				for _, d := range list.Items {
+					_, _ = ProcessDeployment(ns.Name, d.Name, cleanupServiceInstanceNum, "DELETE")
+
+				}
+			}
+
+		}
+
+		cleanupServiceInstanceNum += 1
+
+		ReconcilerIntervalPeriod, err := strconv.Atoi(os.Getenv("RECONCILER_PERIOD"))
+
+		if err == nil {
+			ReconcilerIntervalPeriod = 5
+		}
+
+		fmt.Printf("ReconcilerIntervalPeriod=%d\n", ReconcilerIntervalPeriod)
+		d := time.Duration(ReconcilerIntervalPeriod * 1000 * 1000 * 1000)
+
+		time.Sleep(d)
+	}
+
+}
+
+func isNamespaceAllowed(ns string) bool {
+
+	for _, namespace := range BlockedNameSpaceList {
+
+		if ns == namespace {
+			if AppLogLevel == "INFO" || AppLogLevel == "TRACE" {
+				glog.Infof("Skipping the namespace: %s", ns)
+			}
+			return false
+		}
+	}
+	return true
 }
 
 func DeleteExtraPods(nameSpace string, ExistingPodsList []string, numOfPodsToBeDeleted int) {
