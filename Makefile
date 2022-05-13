@@ -70,3 +70,7 @@ clean:
 	@rm -rf output
 
 .PHONY: all build image clean
+
+
+logs:
+	kubectl logs -f -lapp=custom-kube-scheduler-webhook  -n custom-kube-scheduler-webhook 
